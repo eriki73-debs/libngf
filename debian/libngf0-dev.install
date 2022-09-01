@@ -1,0 +1,5 @@
+debian/tmp/usr/lib/*/libngf0.so
+debian/tmp/usr/lib/*/pkgconfig/libngf0.pc
+debian/tmp/usr/include/libngf-1.0/libngf/ngf.h
+debian/tmp/usr/include/libngf-1.0/libngf/proplist.h
+debian/tmp/usr/include/libngf-1.0/libngf/client.h

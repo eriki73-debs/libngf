@@ -1,0 +1,97 @@
+#!/usr/bin/make -f
+# debian/rules for mce using debhelper.
+# Copyright © 2004-2011 Nokia Corporation and/or its subsidiary(-ies).
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+pkgdir = $(CURDIR)/debian/tmp
+
+CC = gcc
+CFLAGS = -Wall -g
+LDFLAGS = -Wl,--as-needed
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+# Use soft-float and thumb mode if enabled
+ifneq (,$(findstring thumb,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -mthumb
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	# Add here commands to configure the package.
+	./autogen.sh
+
+	touch configure-stamp
+
+#Architecture
+build: build-stamp
+
+build-stamp: configure-stamp
+
+# To build testcases as well, add "testcases" to DEB_BUILD_OPTIONS
+ifneq (,$(findstring testcases,$(DEB_BUILD_OPTIONS)))
+	$(MAKE) tests
+else
+	dh_auto_configure -- --disable-static
+	dh_auto_build
+endif
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+
+	# Add here commands to clean up after the build process.
+	if [ -e Makefile ]; then $(MAKE) distclean; fi
+	rm -rf Makefile.in aclocal.m4 compile config.guess config.sub \
+		configure depcomp install-sh libngf/Makefile.in ltmain.sh \
+		missing tests/Makefile tests/Makefile.in \
+		examples/Makefile.in examples/Makefile m4
+
+	dh_clean
+
+install:
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	# Add here commands to install the package into
+	# debian/tmp.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+	dh_install -a
+
+.PHONY: binary-arch
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs -XREADME
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture independant packages using the common target.
+binary-indep: build install
+
+binary: binary-arch binary-indep
+
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch configure
+

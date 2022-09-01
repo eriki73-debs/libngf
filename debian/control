@@ -1,0 +1,20 @@
+Source: libngf
+Section: misc
+Priority: optional
+Maintainer: Santtu Lakkala <ext-santtu.1.lakkala@nokia.com>
+Uploaders: Philippe De Swert <philippe.de-swert@nokia.com>, Pekka Lundström <pekka.lundstrom@nokia.com>, Tuomo Tanskanen <ext-tuomo.1.tanskanen@nokia.com>, Jukka Turunen <ext-jukka.t.turunen@nokia.com>, Jyrki Hämäläinen <ext-jyrki.pe.hamalainen@nokia.com>
+Build-Depends: debhelper (>= 5.0.0), pkg-config, libglib2.0-dev (>= 2.18.0), libdbus-1-dev (>= 1.0.2), libdbus-glib-1-dev, check, doxygen, libtool-bin
+Standards-Version: 3.8.4
+
+Package: libngf0
+Architecture: any
+Depends: dbus, ${shlibs:Depends}, ${misc:Depends}
+Description: This package contains the C-based client library for accessing
+ Non-graphic feedback services.
+
+Package: libngf0-dev
+Section: devel
+Priority: extra
+Architecture: any
+Depends: libngf0 (= ${binary:Version}), ${misc:Depends}
+Description:  Non-graphic feedback C-based development package
